@@ -1,4 +1,4 @@
-//Application全局只有一个，本身就是单例
+//Application鍏ㄥ眬鍙湁涓�涓紝鏈韩灏辨槸鍗曚緥
 public class MyApplication extends Application {
 	private static MyApplication app;
 	public static MyApplication getInstance() {
