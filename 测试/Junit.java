@@ -4,6 +4,7 @@
  主要用于白盒测试，回归测试。
  */
 
+/*----------------------------------------------------------------------------------------------------------*/
 
 // Junit 所有的测试方法都是以@Test 修饰，以public void 开头
 @Test
@@ -70,11 +71,26 @@ public void textArrayList() throws Exception {
 
 // 更改测试运行器以及将要测试的类放入SuiteClasses中
   @RunWith(Suite.class)
-  @SuiteClasses({ AppTest.class, CalculateTest.class, JunitFlowTest.class })
+  @SuiteClasses({ AppTest.class, CountNumberTest.class })
   public class AllTests {
       // 没有测试方法
   }
 
+// test的运行顺序
+// 在测试类中，如果我们要指定方法的执行顺序，可以使用注解FixMethodOrder
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class CountNumberTest {
+    // 测试方法
+}
+
+// MethodSorter是一个枚举，它有以下枚举项，默认为DEFAULT
+// NAME_ASCENDING: 按字母的升序执行
+// JVM: 按照JVM中方法加载的顺序
+// DEFAULT: 默认顺序，由方法名hashcode值来决定，如果hash值大小一致，则按名字的字典顺序确定。
+         // 由于hashcode的生成和操作系统相关(以native修饰），所以对于不同操作系统，可能会出现不一样的执行顺序。
+         // 在某一操作系统上，多次执行的顺序不变。
+
+/*----------------------------------------------------------------------------------------------------------*/
 
 // 栗子：
 public class CountNumber {
