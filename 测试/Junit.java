@@ -111,6 +111,7 @@ public class CountNumberTest {
 
     @After
     public void tearDown() throws Exception {
+        countNumber = null;
         System.out.println("@after");
     }
 
