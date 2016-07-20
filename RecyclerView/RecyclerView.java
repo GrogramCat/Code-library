@@ -19,7 +19,7 @@ recyclerview.setAdapter(adapter)
  创建Adapter首先继承RecyclerView.Adapter<VH>类，实现三个抽象的方法
  并创建一个静态的ViweHolder，继承RecyclerView.ViewHolder类
  */
- public class Adapter entends RecyclerView.Adapter<Adapter.VH> {
+ public class Adapter extends RecyclerView.Adapter<Adapter.VH> {
      private List<Data> dataList;
      private Context context;
 
