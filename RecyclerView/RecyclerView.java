@@ -11,7 +11,7 @@ RecyclerView recyclerview = (RecyclerView)findViewById(R.id.recyclerview);
  系统默认为我们提供了三个实现了类：LinearLayoutManager、GridLayoutManager、StaggeredGridLayoutManager
  分别是线性、网络、瀑布流
  */
-recyclerview.setLayoutManager(new LinearLayoutManager(thislinearLayoutManager.VERTICAL, false));
+recyclerview.setLayoutManager(new LinearLayoutManager(this, linearLayoutManager.VERTICAL, false));
 
 // 设置适配器
 recyclerview.setAdapter(adapter)
