@@ -1,3 +1,4 @@
+// 学习自“深入浅出 RecyclerView” http://kymjs.com/code/2016/07/10/01
 // 常用方法
 // 在build.gradle文件中加入
 compile 'com.android.support:recyclerview-v7:24.0.0'
