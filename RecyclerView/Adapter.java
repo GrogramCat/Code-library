@@ -1,7 +1,7 @@
-/*
- Adapter封装
- RecyclerView的通用适配器
- 和滚动时不加载图片的封装
+/**
+  Adapter封装
+  RecyclerView的通用适配器
+  和滚动时不加载图片的封装
  */
  public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<RecyclerHolder> {
 
