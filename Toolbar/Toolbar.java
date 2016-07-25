@@ -17,7 +17,7 @@ protected void onCreate(Bundle saveInstanceState){
     // <item name="android:windowNoTitle">true></item>
 
 // Toolbar支持设置单独一个Theme
-/*
+/**
  *<android.support.v7.widget.Toolbar
  *  android:id="@+id/toolbar"
  *  ...
@@ -36,7 +36,8 @@ protected void setToolbarAlpha(float alpha) {
 
 // 动画显示和隐藏Toolbar
 public void showToolbar(boolean show) {
-    if (show == toolbarShow || toolbar == null) return;
+    if (show == toolbarShow || toolbar == null) 
+        return;
     toolbarShow = show;
     if (show) {
         toolbar.animate()
