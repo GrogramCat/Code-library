@@ -62,10 +62,10 @@ gradlew assembleRelease
 android {
     productFlavors {
         wandoujia {
-            mainfestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "wandoujia"]
         }
         xiami {
-            mainfestPlaceholders = [UMENG_CHANNEL_VALUE: "xiami"]
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "xiami"]
         }
     }
 }
