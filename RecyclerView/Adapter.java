@@ -12,7 +12,7 @@
      private OnItemClickListener listener;
 
      public interface OnItemClickListener {
-         void onItemClick(View view, Object data, int position)
+         void onItemClick(View view, Object data, int position);
      }
 
      public BaseRecyclerAdapter(RecyclerView v, Collection<T> datas, int itemLayoutId) {
@@ -21,7 +21,7 @@
          } else if(datas instanceof List) {
              realDatas = (List<T>) datas;
          } else {
-             realDatas = new ArratList<>(datas);
+             realDatas = new ArrayList<>(datas);
          }
          mItemLayoutId = itemLayoutId;
          context = v.getContext();
@@ -39,7 +39,7 @@
          })
      }
 
-     public abstract void convert(RecyclerHolder holder, int position, boolean isScrolling);
+     public abstract void convert(RecyclerHolder holder, T item, int position, boolean isScrolling);
 
      @Override 
      public RecyclerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -80,7 +80,7 @@
          } else if(datas instanceof List) {
              realDatas = (List<T>) datas;
          } else {
-             realDatas = new ArraryList<>(datas);
+             realDatas = new ArrayList<>(datas);
          }
          return this;
      }
@@ -90,8 +90,6 @@
       */
      public class RecyclerHolder extends RecyclerView.ViewHolder {
         
-        private final SparseArray<View> mViews;
-
         public RecyclerHolder(View itemView) {
             super(itemView);
             this.mViews = new SparseArray<View>(8);
@@ -103,7 +101,7 @@
 
         // 通过控件的id获取对应的控件，如果没有则加入views
         @SupperssWarnings("unchecked")
-        public <T extens View> T getView(int viewId) {
+        public <T extends View> T getView(int viewId) {
             View view = mViews.get(viewId);
             if(view == null) {
                 view = itemView.findViewById(viewId);
