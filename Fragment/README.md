@@ -1,5 +1,5 @@
 # Fragment 防坑指南
->作者 : YoKey
+>学习于 : YoKey
 
 ### 0x00 getActivity() 空指针
 解决:在Fragment 的基类中设置一个Activity 全局变量(有可能一起内存的泄漏)
