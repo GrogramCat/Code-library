@@ -2,6 +2,7 @@
 
 ## 命令行编译项目
 1. 切换到项目的跟目录,执行以下指令查看当面项目的Gradle版本 
+
 > gradlew -v
 
 输出结果:
@@ -21,6 +22,7 @@ OS:           Windows 8.1 6.3 amd64
 ```
 
 2. 接着清理项目
+
 > gradlew clean
 
 输出结果
@@ -32,6 +34,7 @@ BUILD SUCCESSFUL
 ```
 
 3. 最后重新Build 项目
+
 > gradlew build
 
 出现一下字样 , 则表示编译成功
@@ -78,6 +81,7 @@ android {
 ```
 
 设置完成后就可以执行命令,例如打包出wandoujia 的Release 包
+
 > gradlew assemableWandoujiaRelease
 
 ## Gradle 的一些知识
