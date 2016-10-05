@@ -1,7 +1,8 @@
 # Fragment 防坑指南
 >学习于 : YoKey
 
-### 0x00 getActivity() 空指针
+## 0x00 getActivity() 空指针
+
 解决:在Fragment 的基类中设置一个Activity 全局变量(有可能一起内存的泄漏)
 ```java
 protected Activity mActivity;
@@ -12,10 +13,10 @@ public onAttach(Context context) {
 }
 // 最好的办法还是不要在onDetach后再调用Activity对象
 ```
-***
-### 0x01 Fragment 重叠异常
-当发生"内存重启",FragmentManager 会将保存的Fragment 按照栈底到栈顶的
-顺序恢复,并且全部为show() 形式.
+
+## 0x01 Fragment 重叠异常
+
+当发生"内存重启",FragmentManager 会将保存的Fragment 按照栈底到栈顶的顺序恢复,并且全部为show() 形式.
 
 解决一: findFragmentByTag()
 ```java
@@ -72,11 +73,12 @@ protected void onCreate(Bundle savedInstanceState) {
     }
 }
 ```
-***
-### 0x02 不靠谱的出栈方法remove()
+
+## 0x02 不靠谱的出栈方法remove()
+
 popBackStack() 系列方法才能真正出栈
-***
-### 0x03 多个Fragment 同时出栈的那些深坑BUG
+
+## 0x03 多个Fragment 同时出栈的那些深坑BUG
 在Fragment库如下4个方法是有BUG:
 * popBackStack(String tag, String flags)
 * popBackStack(int id, int flags)
@@ -102,37 +104,135 @@ pubic class FragmentTransactionBugFix {
 handler.post(new Runnable) {
     @Override
     public void run() {
-        FragmentTransactionBugFix.reverseOrder(fragmentManager);
+        FragmentTransactionBugFix.reorderIndices(fragmentManager);
     }
 }
 ```
-***
-### 0x04 Fragment转场动画
-如果通过tag/id同时出栈多个Fragment的情况时,
-谨慎使用setCustomAimations(enter, exit, popEnter, popExit) .
-因为在出栈多个Fragment 时,伴随着动画,会在某些情况下发生异常
-还需要搭配Fragment的onCreateAnimation() 临时取消出栈动画. <p>
-1. pop多个Fragment是转场动画带来的问题 <p>
-在使用pop(tag/id)出栈多个Fragment ,务必不能设定转场动画. <p>
-2. 进入新的Fragment并立刻关闭当前的Fragment是的一些问题 <p>
-(1) 如果想从当前的Fragment进去一个新的Fragment,并且同时关闭当前的Fragment ,
-由于是数据结构是栈,所以正确的做法是先pop ,再add , 但是转场动画会有覆盖的不正
-常现象,需要处理,不是的话会闪屏. <p>
-(2) Fragment 的根布局要设置android:clickable=true ,原因是pop后又立刻add 
-新的Fragment 时,在转场动画过程中,如果手速太快,在动画结束前你多点击了一下,上
-一个Fragment 的可点击区域可能会在下一个Fragment 上依然可用.
-***
-### 0x05 一些使用建议
-1. 对Fragment 传递数据,建议使用setArguments(Bundle args) ,而后在onCreate() 
-取出,在"内存重启"前,系统会保存数据,不会造成数据的丢失.和Activity 的intent原理
-一致.
-2. 使用newInstance(参数) 创建Fragment 对象,优点是调用者只需要关心传递的是哪些
-数据,而无需关心传递数据的key 是什么.
-3. 如果需要在Fragment中用到宿主Activity 对象,建议在基类Fragment中定义一个Activity 
-的全局变量,在onAttach() 中初始化它.
-***
-### 0x06 add(), show(), hide(), replace()
+
+## 0x04 一些使用建议
+
+1. 对Fragment 传递数据,建议使用setArguments(Bundle args) ,然后在onCreate() 取出,在"内存重启"前,系统会保存数据,不会造成数据的丢失.和Activity 的intent原理一致.
+2. 使用newInstance(参数) 创建Fragment 对象,优点是调用者只需要关心传递的是哪些数据,而无需关心传递数据的key 是什么.
+3. 如果需要在Fragment中用到宿主Activity 对象,建议在基类Fragment中定义一个Activity 的全局变量,在onAttach() 中初始化它.
+
+## 0x05 add(), show(), hide(), replace()
+
 1. 区别 <p>
 show(), hide()最终是让Fragment的View setVisibility(true/false) 不会调用生命周期 <p>
 replace() 的话会销毁视图,即调用onDestroyView(), onCreateView() 等一系列生命周期 <p>
- 
+add()和replace()不要在同一个阶段的FragmentManager 里混搭使用.
+
+2. 使用场景 <p>
+如果你有一个很高的概率会再次使用当前的Fragment ,建议使用show(),hide(),可以提高性能.
+
+3. onHiddenChanged 的回调时机 <p>
+当使用add()+show(),hide()跳转时,旧的Fragment 回调onHiddenChanged(), 不会回调opStop()等声明周期,
+而新的Fragment 在创建时不会回调onHiddenChanged().
+
+4. Fragment 重叠问题 <p>
+使用show(),hide()带来的问题.不作处理的话,在"内存重启"后,Fragment 会重叠
+
+## 0x06 关于FragmentManager
+
+1. FragmentManager <p>
+对于宿主Activity,getSupportFragmentManager()获取的是FragmentActivity的FragmentManager对象.对于Fragment ,getFragmentManager()是获取父Fragment(如果没有则是FragmentActivity)的FragmentManager对象,而getChildFragmentManager()是获取自己的FragmentManager 对象.
+
+2. 恢复Fragment时(防止Fragment重叠),选择getFragments()还是findFragmentByTag() <p>
+(1)getFragments().
+对于一个Activity内有多个Fragment,如果关系是流程的 <p>
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    if(savedInstanceState != null) {
+        List fragments = getSupportFragmentManager().getFragments();
+        if(fragments != null & fragment.size() > 0) {
+            boolean showFlag = false;
+
+            FragmentTrasaction ft = getSupportFragmentManager().beginTransaction();
+            for(int i = fragments.size() - 1;i >= 0; i--) {
+                Fragment fragment = fragments.get(i);
+                if(fragment != null) {
+                    if(!showFlag){
+                        ft.show(fragments.get(i));
+                        showFlag = true;
+                    } else {
+                        ft.hide(ftagments.get(i));
+                    }
+                }
+            }
+            ft.commit();
+        }
+    }
+}
+```
+
+(2)findFragmentByTag()恢复.不是流程关系,正确做法是在onSaveInstanceState()内保存当前在Fragment的tag或者下标,在onCreate()恢复的时候,隐藏其他的Fragment.
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    
+    FirstFragment firstFragment;
+    SecondFragment secondFragment;
+    OtherFragment otherFragment;
+    if(savedInstanceState != null) {
+        firstFragment = getFragmentManager.findFragmentByTag(firstFragment.getCLass().getName());
+        secondFragment = getFragmentManager.findFragmentByTag(secondFragment.getCLass().getName());
+        otherFragment = getFragmentManager.findFragmentByTag(otherFragment.getCLass().getName());
+
+        index = savedInstanceState.getInt(KEY_INDEX);
+        getSupportFragmentManager.beginTransaction()
+        .show(otherFragment)
+        .hide(secondFragment)
+        .hide(firstFragment)
+        .commit()
+    } else {
+        firstFragment = FirstFragment.newInstance();
+        secondFragment = SecondFragment.newInstance();
+        otherFragment = OtherFragment.newInstance();
+
+        getSupportFragmentManager.beginTransaction()
+        .add(R.id.container, firstFragment, firstFragment.getClass().getName())
+        .add(R.id.container, secondFragment, firstFragment.getClass().getName())
+        .add(R.id.container, otherFragment, firstFragment.getClass().getName())
+        .hide(secondFragment)
+        .hide(otherFragment)
+        .commit();
+    }
+}
+
+@Override
+public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt(KEY_INDEX, index);
+}
+```
+
+## 0x07 使用ViewPager + Fragmet 的注意事项
+
+1. 使用ViewPager + Fragment 时,切换不用ViewPager页面,不会回调任何的生命周期的方法以及onHiddenChanged(),只有setUserVisibleHint(boolean isVisibleToUser)会被回调.如果需要进行一些懒加载,需要在这里处理
+
+2. 在给ViewPager绑定FragmentPagerAdapter时,new FragmentPagerAdapter(fragmentManager)的FragmentManger 一定要保证正确.
+
+3. 如果使用ViewPager + Fragment, 不需要在"内存重启"的情况下,去恢复Fragments,有FragmentPagerAdapter的存在,不需要你去做恢复工作.
+
+## 0x08 Fragment 事务
+
+1. 如果你在使用popBackStackImmdiate()方法后,紧接着直接调用事务的方法,因为他们运行在消息队列的问题,还没来得及出栈就运行事务的方法了,这可能会导致不正常现象.
+正确做法:
+```java
+getSupportFragmentManager().popBackStackImmediate();
+new Handler().post(new Runnable() {
+    @Override
+    public void run() {
+        //这里执行事务方法
+    }
+})
+```
+
+2. 给Fragment设定Fragment转场动画时，如果你没有一整套解决方案,只使用setCustomAnimations(enter, exit)这个方法.
+
+## 0x09 作者给出的Fragmentation 库
+[Fragmentation](https://github.com/YoKeyword/Fragmentation)
