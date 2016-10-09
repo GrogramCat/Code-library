@@ -1,39 +1,60 @@
-// 在代码中
+## Toolbar
+
+xml
+```xml
+<android.support.v7.widget.toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    app:theme="@style/Theme.AppCompat"
+    />
+```
+
+在代码中
+```java
 @Override
 protected void onCreate(Bundle saveInstanceState){
     super.onCreate(saveInstanceState);
     setContentView(R.layout.activity_main);
     Toolbar mToolbar = (Toolbar)findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);// 继承AppCompatActivity
+    setSupportActionBar(toolbar);// Activity 继承AppCompatActivity 时使用setSupportActionBar
 
     // 设置导航图标
     mToolbar.setNavigationIcon(...);
     // 设置标题
     getSupportActionBar.setTitle(...);
 }
+```
 
-// Activity的Theme设为NoActionBar；或者Theme.AppCompat并重写以下
-    // <item name="windowActionBar">false</item>
-    // <item name="android:windowNoTitle">true></item>
+Activity 的Theme 设为NoActionBar;
 
-// Toolbar支持设置单独一个Theme
-/**
- *<android.support.v7.widget.Toolbar
- *  android:id="@+id/toolbar"
- *  ...
- *  app:theme="@style/Theme.AppCompat"/>  
- */
-// 然后给Activity设置一个Light主题
+或者使用Theme.AppCompat 并重写以下
+```xml
+<item name="windowActionBar">false</item>
+<item name="android:windowNoTitle">true></item>
+```
 
+Toolbar 支持设置单独的Theme,*设置一个Light主题,title字体颜色就为浅色了*
+```xml
+ <android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    ...
+    app:theme="@style/Theme.AppCompat"/>  
+```
 
-// Toolbar的特技
+## Toolbar 的特技
+
+```java
 // 设置Toolbar的背景透明度
 mActionbarDrawable = new ColorDrawable(getResources().getColor(R.color.red));
 getSupportActionBar.setBackgroundDrawable(mActionbarDrawable);
 protected void setToolbarAlpha(float alpha) {
     mActionbarDrawable.setAlpha((int)(alpha*255));
 }
+```
 
+```java
 // 动画显示和隐藏Toolbar
 public void showToolbar(boolean show) {
     if (show == toolbarShow || toolbar == null) 
@@ -79,3 +100,4 @@ RecyclerView.setOnScrollListener(new HidingScrollListener() {
         showToolbar(true);
     }
 });
+```
