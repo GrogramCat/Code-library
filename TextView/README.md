@@ -128,7 +128,7 @@ textView.getPaint().setFakeBoldText(true); // 设置文字为粗体
 
 ## 文字过长省略号与跑马灯效果
 
-1. 省略号
+* 1 省略号
 
 ```xml
 android:maxEms="6"         限制显示的字符长度
@@ -136,7 +136,7 @@ android:singleLine="true"  单行显示
 android:ellipsize="end"    在结尾用省略号,还有以下值:start, end, middle,marquee
 ```
 
-2. 跑马灯效果 <p>
+* 2 跑马灯效果 <p>
 在设置android:ellipsize="marquee"下,可以设置android:marqueeRepeatLimt滚动次数,设置marquee_forever为无限次,需要控件获得焦点
 
 ```xml
