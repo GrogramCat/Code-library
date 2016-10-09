@@ -1,17 +1,20 @@
-/**
-  在Android中有三种方式来实现视频的播放 学习于伯乐在线：刘望舒
+## 视频播放
 
-  1、使用自带的播放器。指定Action为ACTION_VIEW，Data为Uri，Type为MIME类型
-  2、使用ViedoView来播放。布局文件中使用ViedoView结合MediaController来实现对其控制
-  3、使用MediaPlayer类和SurfaceView，这种方式比较灵活
- */
+>在Android中有三种方式来实现视频的播放 学习于伯乐在线：刘望舒
 
+1. 使用自带的播放器。指定Action为ACTION_VIEW，Data为Uri，Type为MIME类型
+2. 使用ViedoView来播放。布局文件中使用ViedoView结合MediaController来实现对其控制
+3. 使用MediaPlayer类和SurfaceView，这种方式比较灵活
+
+```java
 // 调用自带播放器
 Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/textMovie.mp4");
 Intent intent = new Intent(Intent.ACTION_VIEW);
 intent.setDataAndType(uri, "Video/mp4");
 startActivity(intent)
+```
 
+```java
 // 使用ViedoView
 Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/textMovie.mp4");
 VideoView videoview = (VideoView)findViewById(R.id.videoview);
@@ -19,7 +22,9 @@ videoview.setMediaController(new MediaCotroller(this));
 videoview.setVideoURI(uri);
 videoview.start();
 videoview.requestFocus();
+```
 
+```java
 // 使用MediaPlayer
 public class Video extends Activity implements OnCompletionListener, OnErrorListener, OnInfoListener, 
         OnPreparedListener, OnSeekCompleteListener, OnVideoSizeChangedListener, SurfaceHolder.Callback {
@@ -151,3 +156,4 @@ public class Video extends Activity implements OnCompletionListener, OnErrorList
             this.finish();
         }
 }
+```
