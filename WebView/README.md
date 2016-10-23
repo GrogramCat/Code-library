@@ -50,7 +50,7 @@ if(webView.getScrollY() == 0){
 * pageDown(bollean bottom)
 
 ## WebSetting
-WebSetting 是用来管理WebView 配置类的. 当WebView第一次创建时, 会包含一个弄人的配置集合.
+WebSetting 是用来管理WebView 配置类的. 当WebView第一次创建时, 会包含一个默认的配置集合.
 
 WebSetting 对象可以通过WebView.getSettings()获得, 与WebView 的生命周期相同.
 
@@ -240,7 +240,7 @@ function toastClick(){
 }
 ```
 
-* JavaScript 调用有返回值的Java 方法
+### JavaScript 调用有返回值的Java 方法
 
 ```java
 @JavaInterface
