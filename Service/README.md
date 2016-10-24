@@ -17,6 +17,7 @@ public MyIntentService extends IntentService {
 
     @Override
     public void onHandleIntent(Intent intent) {
+        // IntentService会创立一个工作线程来完成onHandleIntent中的方法,无需处理多线程的问题
         try {
             Thead.sleep(3000);
         } catch (InterruptedException e) {
@@ -32,6 +33,7 @@ public MyIntentService extends IntentService {
     
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // 提供默认的实现, 将请求Intent放入队列中
         Log.e("TAG", "onStartCommand called");
         return super.onStartCommand(intent, flags, startId);
     }
